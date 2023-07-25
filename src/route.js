@@ -1,6 +1,6 @@
 const express = require("express");
 const sqlUtil = require("./tools/sqlUtil");
-const {upgrade, sendMsgToAll} = require("./business")
+const {sendMsgToAll} = require("./business")
 
 const router = express.Router();
 
@@ -33,6 +33,13 @@ router.get("/", (req, res) => {
 router.post("/status/update", (request, response) => {
     try {
         console.info("接收到参数：", request.body);
+        sendMsgToAll(
+            getWsServer(request),
+            JSON.stringify({
+                type: "Task",
+                message: request.body
+            })
+        );
         fullFilled(response, "收到")
     } catch(error) {
         errorHandler(response, error);

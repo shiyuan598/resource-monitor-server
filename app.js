@@ -2,7 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { startWebSocketServer } = require("./src/websocket");
-const { runScheduleTask } = require("./src/schedule");
 const { PORT } = require("./config");
 
 const app = express();
