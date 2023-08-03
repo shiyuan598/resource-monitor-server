@@ -37,12 +37,11 @@ router.post("/status/update", (request, response) => {
         sendMsgToAll(
             getWsServer(request),
             JSON.stringify({
-                type: "Task",
-                message: request.body
+                data: request.body.mount_dir
             })
         );
         // TODO: 写日志
-        addLog(request.body.log);
+        // addLog(request.body.log);
         fullFilled(response, "收到");
     } catch (error) {
         errorHandler(response, error);
