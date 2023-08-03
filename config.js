@@ -1,14 +1,14 @@
 const PORT = 9011;
 
-const database = {
+const DATABASE = {
     host: "localhost",
     port: "3307",
     user: "root",
     password: "123456",
-    database: "XXXX"
+    database: "monitor"
 };
 
 module.exports = {
     PORT,
-    database
+    DATABASE
 };

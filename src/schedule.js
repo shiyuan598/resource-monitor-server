@@ -8,11 +8,14 @@ const runScheduleTask = () => {
     cron.schedule("0 1 * * 6", () => {
         console.log("定时任务：每周六早1点时执行", dayjs().format("YYYY-MM-DD HH:mm:ss"));
         // 清理一天前的记录
-        const date = dayjs().subtract(3, "day").format("YYYY-MM-DD HH:mm:ss");
+        const date = dayjs().subtract(1, "day").format("YYYY-MM-DD HH:mm:ss");
         removeExpiredData(date);
     });
-    cron.schedule("* * * * * ", () => {
+    cron.schedule("*/30 * * * * *", () => {
         console.log("定时任务：每半分钟执行一次", dayjs().format("YYYY-MM-DD HH:mm:ss"));
+        // 清理一天前的记录
+        const date = dayjs().subtract(30, "day").format("YYYY-MM-DD HH:mm:ss");
+        removeExpiredData(date);
     });
 };
 

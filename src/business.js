@@ -1,5 +1,6 @@
 const WebSocket = require("ws");
 const sqlUtil = require("./tools/sqlUtil");
+const { formatTimestamp } = require("./tools/util");
 
 // 向所有客户端发送消息
 const sendMsgToAll = (wsServer, msg) => {
@@ -14,9 +15,10 @@ const sendMsgToAll = (wsServer, msg) => {
 // 写日志数据
 const addLog = (params) => {
     try {
-        const { name, type, ip, content } = params;
-        const sql = "INSERT INTO logs(name, type, ip, content) VALUES (?, ?, ?, ?)";
-        sqlUtil.execute(sql, [name, type, ip, content]);
+        const { timestamp, ip, type, content } = params;
+        const formatDate = formatTimestamp(timestamp);
+        const sql = "INSERT INTO logs(`timestamp`, ip, `type`, content, create_time) VALUES (?, ?, ?, ?, ?)";
+        sqlUtil.execute(sql, [timestamp, ip, type, content, formatDate]);
     } catch (error) {
         throw error;
     }

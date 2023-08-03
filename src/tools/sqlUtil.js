@@ -2,7 +2,7 @@ const mysql = require("mysql2/promise");
 const config = require("../../config");
 
 // 创建数据库连接池
-const pool = mysql.createPool(config.database);
+const pool = mysql.createPool(config.DATABASE);
 
 // 封装执行查询的方法
 async function execute(sql, params) {

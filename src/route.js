@@ -1,6 +1,6 @@
 const express = require("express");
 const sqlUtil = require("./tools/sqlUtil");
-const { sendMsgToAll } = require("./business");
+const { sendMsgToAll, addLog } = require("./business");
 
 const router = express.Router();
 
@@ -41,6 +41,8 @@ router.post("/status/update", (request, response) => {
                 message: request.body
             })
         );
+        // TODO: 写日志
+        // addLog();
         fullFilled(response, "收到");
     } catch (error) {
         errorHandler(response, error);
@@ -50,20 +52,35 @@ router.post("/status/update", (request, response) => {
 // 查询日志
 router.get("/logs", async (request, response) => {
     try {
-        const { pageNo = 1, pageSize = 10, name = "" } = request.query;
+        const { pageNo = 1, pageSize = 10, type, keyword = "" } = request.query;
         const num = parseInt(pageNo);
         const size = parseInt(pageSize);
         // 查询分页的数据
-        const sql = `
-        SELECT id, name, content, type, ip, content 
+        let sql = `
+        SELECT id, ip, type, content,
+        CASE type
+            WHEN 1 THEN 'error'
+            WHEN 2 THEN 'warn'
+            WHEN 3 THEN 'info'
+        END AS typename,
+        DATE_FORMAT(DATE_ADD(logs.create_time, INTERVAL 8 HOUR), '%Y-%m-%d %H:%i:%S') AS create_time
         FROM logs
-        WHERE name LIKE ?
-        OR type LIKE ?
-        OR content LIKE ?
-        OR create_time LIKE ?
+        WHERE 1 = 1`;
+        const params = [];
+        if (type) {
+            sql += " AND type = ?";
+            params.push(type);
+        }
+        if (keyword) {
+            sql += " AND (ip LIKE ? OR content LIKE ? OR create_time LIKE ?)";
+            params.push(`%${keyword}%`, `%${keyword}%`, `%${keyword}%`);
+        }
+        sql += `
         ORDER BY create_time DESC
         LIMIT ${size} OFFSET ${(num - 1) * size}`;
-        const params = [`%${name}%`, `%${name}%`, `%${name}%`, `${name}%`];
+
+        console.info("sql:", sql);
+        console.info("params:", params);
         const query = sqlUtil.execute(sql, params);
         query.then(
             (value) => fullFilled(response, value),

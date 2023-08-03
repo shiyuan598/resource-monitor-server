@@ -1,5 +1,6 @@
 const fs = require("fs").promises;
 const { exec } = require("child_process");
+const dayjs = require("dayjs");
 
 // 拼接两个路径，正确处理路径间的斜线
 const joinPath = (pre, sub) => {
@@ -58,9 +59,15 @@ const deleteFileAsync = (filePath) => {
     });
 };
 
+const formatTimestamp = (timeStamp) => {
+    const date = new Date(timeStamp * 1000);
+    return dayjs(date).format("YYYY-MM-DD HH:mm:ss")
+};
+
 module.exports = {
     joinPath,
     joinPaths,
     deleteFileOrDirectory,
-    deleteFileAsync
+    deleteFileAsync,
+    formatTimestamp
 };
