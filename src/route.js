@@ -75,11 +75,9 @@ router.get("/logs", async (request, response) => {
             params.push(`%${keyword}%`, `%${keyword}%`, `%${keyword}%`);
         }
         sql += `
-        ORDER BY create_time DESC
+        ORDER BY id DESC
         LIMIT ${size} OFFSET ${(num - 1) * size}`;
 
-        console.info("sql:", sql);
-        console.info("params:", params);
         const query = sqlUtil.execute(sql, params);
         query.then(
             (value) => fullFilled(response, value),
