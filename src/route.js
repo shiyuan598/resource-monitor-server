@@ -42,7 +42,7 @@ router.post("/status/update", (request, response) => {
             })
         );
         // TODO: 写日志
-        // addLog();
+        addLog(request.body.log);
         fullFilled(response, "收到");
     } catch (error) {
         errorHandler(response, error);
